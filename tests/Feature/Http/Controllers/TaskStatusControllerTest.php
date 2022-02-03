@@ -2,19 +2,22 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\User;
-use Database\Seeders\TaskStatusSeeder;
+use Database\Seeders\DatabaseSeeder;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class TaskStatusControllerTest extends TestCase
 {
+    use DatabaseMigrations;
     use RefreshDatabase;
 
-    protected $seeder = TaskStatusSeeder::class;
+    protected $seeder = DatabaseSeeder::class;
 
-    public function testCreate()
+    public function testCreate(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -24,20 +27,48 @@ class TaskStatusControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function testIndex()
+    public function testDeleteSuccess(): void
+    {
+        $this->actingAs(User::first());
+
+        $task = Task::first();
+        $status = TaskStatus::where('id', '!=', $task->status->id)->first();
+
+        $response = $this->delete(route('taskStatus.destroy', ['taskStatus' => $status]));
+
+        $this->assertDatabaseCount('task_statuses', 1);
+        $response->assertRedirect();
+    }
+
+    public function testDeleteFailed(): void
+    {
+        $this->actingAs(User::first());
+
+        $task = Task::first();
+        $status = TaskStatus::where('id', $task->status->id)->first();
+
+        $response = $this->delete(route('taskStatus.destroy', ['taskStatus' => $status]));
+
+        $this->assertDatabaseCount('task_statuses', 2);
+        $response->assertRedirect();
+    }
+
+    public function testIndex(): void
     {
         $response = $this->get(route('taskStatus.index'));
 
         $response->assertStatus(200);
-        $this->assertDatabaseCount('task_statuses', 4);
+        $this->assertDatabaseCount('task_statuses', 2);
     }
 
-    public function testStore()
+    public function testShow(): void
+    {
+        $response = $this->get(route('taskStatus.show', ['taskStatus' => TaskStatus::first()]));
+
+        $response->assertRedirect();
+    }
+
+    public function testStore(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -47,30 +78,23 @@ class TaskStatusControllerTest extends TestCase
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
 
-        $this->assertDatabaseCount('task_statuses', 5);
+        $this->assertDatabaseCount('task_statuses', 3);
         $this->assertDatabaseHas('task_statuses', ['name' => 'created']);
     }
 
-    public function testShow()
-    {
-        $response = $this->get(route('taskStatus.show'));
-
-        $response->assertRedirect();
-    }
-
-    public function testUpdate()
+    public function testUpdate(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
         $status = TaskStatus::first();
 
-        $response = $this->patch(route('taskStatus.update', $status), ['name'=>'updated']);
+        $response = $this->patch(route('taskStatus.update', $status), ['name' => 'updated']);
 
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
 
-        $this->assertDatabaseCount('task_statuses', 4);
+        $this->assertDatabaseCount('task_statuses', 2);
         $this->assertDatabaseHas('task_statuses', ['id' => $status->id, 'name' => 'updated']);
     }
 }

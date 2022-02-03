@@ -1,0 +1,68 @@
+name: PHP CI
+
+on:
+  - push
+  - pull_request
+
+env:
+  DB_HOST: localhost
+  DB_USERNAME: developer
+  DB_PASSWORD: test
+  DB_DATABASE: hexlet_project_4_test
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: developer
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: hexlet_project_4_test
+        ports:
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Run Setup
+        run: make setup
+        env:
+          DB_PORT: ${{ job.services.postgres.ports[5432] }}
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Linter
+        run: make lint
+
+      - name: Tests
+        run: make test
+        env:
+          DB_PORT: ${{ job.services.postgres.ports[5432] }}
+
+#      - name: Code Coverage
+#        uses: paambaati/codeclimate-action@v2.6.0
+#        env:
+#          DB_PORT: ${{ job.services.postgres.ports[5432] }}
+#          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+#          XDEBUG_MODE: coverage
+#        with:
+#          coverageCommand: make test-coverage
+#          coverageLocations: ${{github.workplace}}/build/logs/clover.xml:clover
+#          debug: true

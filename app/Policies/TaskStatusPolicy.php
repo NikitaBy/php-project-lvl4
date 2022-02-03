@@ -12,17 +12,68 @@ class TaskStatusPolicy
 {
     use HandlesAuthorization;
 
-
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can create models.
      *
      * @param User $user
      *
      * @return Response|bool
      */
-    public function viewAny(?User $user)
+    public function create(User $user)
     {
-       return true;
+        return Auth::check();
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     *
+     * @param User       $user
+     * @param TaskStatus $taskStatus
+     *
+     * @return Response|bool
+     */
+    public function delete(User $user, TaskStatus $taskStatus)
+    {
+        return Auth::check();
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     *
+     * @param User       $user
+     * @param TaskStatus $taskStatus
+     *
+     * @return Response|bool
+     */
+    public function forceDelete(User $user, TaskStatus $taskStatus)
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     *
+     * @param User       $user
+     * @param TaskStatus $taskStatus
+     *
+     * @return Response|bool
+     */
+    public function restore(User $user, TaskStatus $taskStatus)
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     *
+     * @param User       $user
+     * @param TaskStatus $taskStatus
+     *
+     * @return Response|bool
+     */
+    public function update(User $user, TaskStatus $taskStatus)
+    {
+        return Auth::check();
     }
 
     /**
@@ -33,72 +84,20 @@ class TaskStatusPolicy
      *
      * @return Response|bool
      */
-    public function view(User $user, TaskStatus $taskStatus)
-    {
-        return Auth::check();
-    }
-
-    /**
-     * Determine whether the user can create models.
-     *
-     * @param User  $user
-     *
-     * @return Response|bool
-     */
-    public function create(User $user)
-    {
-        return Auth::check();
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     *
-     * @param  User       $user
-     * @param  TaskStatus $taskStatus
-     *
-     * @return Response|bool
-     */
-    public function update(User $user, TaskStatus $taskStatus)
-    {
-        return Auth::check();
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     *
-     * @param User        $user
-     * @param  TaskStatus $taskStatus
-     *
-     * @return Response|bool
-     */
-    public function delete(User $user, TaskStatus $taskStatus)
+    public function view(?User $user, TaskStatus $taskStatus)
     {
         return true;
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Determine whether the user can view any models.
      *
-     * @param User        $user
-     * @param  TaskStatus $taskStatus
-     *
-     * @return Response|bool
-     */
-    public function restore(User $user, TaskStatus $taskStatus)
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  User  $user
-     * @param  TaskStatus  $taskStatus
+     * @param User $user
      *
      * @return Response|bool
      */
-    public function forceDelete(User $user, TaskStatus $taskStatus)
+    public function viewAny(?User $user)
     {
-        return false;
+        return true;
     }
 }

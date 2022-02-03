@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Task;
+use App\Models\TaskStatus;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,7 +16,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        sleep(1);
-        // \App\Models\User::factory(10)->create();
+        User::factory()->create();
+        TaskStatus::factory()->create();
+
+        Task::factory()->forStatus(['name' => 'Using status'])->forAuthor(['name' => 'Using user'])->create();
     }
 }
