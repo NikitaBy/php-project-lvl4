@@ -6,16 +6,20 @@ use App\Models\task;
 use App\Models\TaskStatus;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class TaskControllerTest extends TestCase
 {
+    use DatabaseMigrations;
     use RefreshDatabase;
+
+    protected $seed = true;
 
     protected $seeder = DatabaseSeeder::class;
 
-    public function testCreate()
+    public function testCreate(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -25,7 +29,7 @@ class TaskControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testDeleteFailed()
+    public function testDeleteFailed(): void
     {
         $task = Task::first();
         $this->actingAs(User::factory()->create());
@@ -35,7 +39,7 @@ class TaskControllerTest extends TestCase
         $this->assertDatabaseCount('tasks', 1);
     }
 
-    public function testDeleteSuccess()
+    public function testDeleteSuccess(): void
     {
         $task = Task::first();
         $this->actingAs($task->author);
@@ -46,7 +50,7 @@ class TaskControllerTest extends TestCase
         $response->assertRedirect();
     }
 
-    public function testIndex()
+    public function testIndex(): void
     {
         $response = $this->get(route('task.index'));
 
@@ -54,14 +58,14 @@ class TaskControllerTest extends TestCase
         $this->assertDatabaseCount('tasks', 1);
     }
 
-    public function testShow()
+    public function testShow(): void
     {
         $response = $this->get(route('task.show', ['task' => Task::first()]));
 
         $response->assertStatus(200);
     }
 
-    public function testStore()
+    public function testStore(): void
     {
         $this->actingAs(User::first());
 
@@ -74,14 +78,14 @@ class TaskControllerTest extends TestCase
         $this->assertDatabaseHas('tasks', ['name' => 'created']);
     }
 
-    public function testStoreUnauthorized()
+    public function testStoreUnauthorized(): void
     {
         $this->post(route('task.store', ['name' => 'created', 'status_id' => TaskStatus::first()->id]));
 
         $this->assertDatabaseCount('tasks', 1);
     }
 
-    public function testUpdate()
+    public function testUpdate(): void
     {
         $this->actingAs(User::first());
 
@@ -95,4 +99,9 @@ class TaskControllerTest extends TestCase
         $this->assertDatabaseCount('tasks', 1);
         $this->assertDatabaseHas('tasks', ['id' => $task->id, 'name' => 'updated']);
     }
+    //
+    //    protected function setUp(): void
+    //    {
+    //        $this->seed();
+    //    }
 }

@@ -6,11 +6,13 @@ use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class TaskStatusControllerTest extends TestCase
 {
+    use DatabaseMigrations;
     use RefreshDatabase;
 
     protected $seeder = DatabaseSeeder::class;
