@@ -27,7 +27,7 @@ cache:
 	php artisan cache:clear
 
 deploy:
-	git push heroku
+	git push heroku main
 
 lint:
 	composer exec --verbose phpcs -- --standard=PSR12 app
