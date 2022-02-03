@@ -33,7 +33,7 @@ lint:
 	composer exec --verbose phpcs -- --standard=PSR12 app
 
 lint-fix:
-	composer exec --verbose phpcs -- --standard=PSR12 app
+	composer exec --verbose phpcsbf -- --standard=PSR12 app
 
 test-coverage:
 	composer exec --verbose phpunit tests -- --coverage-clover build/logs/clover.xml
