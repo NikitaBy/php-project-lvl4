@@ -13,4 +13,9 @@ class TaskStatus extends Model
      * @var string[]
      */
     protected $fillable = ['name'];
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'status_id');
+    }
 }

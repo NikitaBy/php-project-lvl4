@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskStatusController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,12 +14,12 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-app()->setLocale(env('locale'));
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::resource('taskStatus', TaskStatusController::class);
+Route::resource('task', TaskController::class);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
