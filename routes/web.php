@@ -31,10 +31,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 Route::get('/send-mail', function () {
-
     Mail::to('newuser@example.com')->send(new InitMailtrapNotification());
-
-    return 'A message has been sent to Mailtrap!';
+    return view('welcome');
 
 });
 
