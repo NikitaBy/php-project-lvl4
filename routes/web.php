@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LabelController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskStatusController;
 use App\Mail\InitMailtrapNotification;
@@ -25,6 +26,7 @@ Route::get('/', function () {
 
 Route::resource('taskStatus', TaskStatusController::class);
 Route::resource('task', TaskController::class);
+Route::resource('label', LabelController::class);
 
 Route::get('/dashboard', function () {
     return view('dashboard');

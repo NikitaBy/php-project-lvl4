@@ -21,4 +21,7 @@
 {{ Form::label('assigned_to_id', 'assigned_to_id') }}
 {{ Form::select('assigned_to_id', collect($users)->mapWithKeys(function ($user, $key) {return [$user->id => $user->name];})->all(), null, ['placeholder' => '----']) }}
 
+{{ Form::label('labels[]', 'labels[name!!!!]') }}
+{{ Form::select('labels[]', collect($labels)->mapWithKeys(function ($label, $key) {return [$label->id => $label->name];})->all(), null, ['placeholder' => '----', 'multiple' => true]) }}
+
 <br>

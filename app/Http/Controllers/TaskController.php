@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Models\Label;
 use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\User;
@@ -22,8 +23,9 @@ class TaskController extends Controller
 
         $statuses = TaskStatus::all();
         $users = User::all();
+        $labels = Label::all();
 
-        return view('task.create', compact('task', 'statuses', 'users'));
+        return view('task.create', compact('task', 'statuses', 'users', 'labels'));
     }
 
     public function destroy(Task $task): RedirectResponse
@@ -37,8 +39,9 @@ class TaskController extends Controller
     {
         $statuses = TaskStatus::all();
         $users = User::all();
+        $labels = Label::all();
 
-        return view('task.edit', compact('task', 'statuses', 'users'));
+        return view('task.edit', compact('task', 'statuses', 'users', 'labels'));
     }
 
     public function index()
@@ -62,6 +65,8 @@ class TaskController extends Controller
         $task->author()->associate(Auth::user());
         $task->save();
 
+        $task->labels()->attach($data['labels']);
+
         return redirect()->route('task.index');
     }
 
@@ -70,6 +75,7 @@ class TaskController extends Controller
         $data = $request->validated();
 
         $task->fill($data);
+        $task->labels()->attach($data['labels']);
         $task->save();
 
         return redirect()->route('task.index');
