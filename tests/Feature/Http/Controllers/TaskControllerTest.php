@@ -99,9 +99,4 @@ class TaskControllerTest extends TestCase
         $this->assertDatabaseCount('tasks', 1);
         $this->assertDatabaseHas('tasks', ['id' => $task->id, 'name' => 'updated']);
     }
-    //
-    //    protected function setUp(): void
-    //    {
-    //        $this->seed();
-    //    }
 }

@@ -45,11 +45,6 @@ class LabelController extends Controller
         return view('label.index', compact('labels'));
     }
 
-    public function show(Label $label)
-    {
-        return view('label.show', compact('label'));
-    }
-
     public function store(LabelRequest $request): RedirectResponse
     {
         $data = $request->validated();

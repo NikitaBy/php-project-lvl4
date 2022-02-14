@@ -36,7 +36,7 @@ class LabelPolicy
         return Auth::check();
     }
 
-    public function view(User $user, Label $label): bool
+    public function view(?User $user, Label $label): bool
     {
         return true;
     }

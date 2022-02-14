@@ -60,13 +60,6 @@ class LabelControllerTest extends TestCase
         $this->assertDatabaseCount('labels', 2);
     }
 
-    public function testShow(): void
-    {
-        $response = $this->get(route('label.show', ['label' => Label::first()]));
-
-        $response->assertRedirect();
-    }
-
     public function testStore(): void
     {
         $user = User::factory()->create();

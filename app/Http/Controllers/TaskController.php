@@ -65,7 +65,9 @@ class TaskController extends Controller
         $task->author()->associate(Auth::user());
         $task->save();
 
-        $task->labels()->attach($data['labels']);
+        if (isset($data['labels'])) {
+            $task->labels()->attach($data['labels']);
+        }
 
         return redirect()->route('task.index');
     }
@@ -75,8 +77,11 @@ class TaskController extends Controller
         $data = $request->validated();
 
         $task->fill($data);
-        $task->labels()->attach($data['labels']);
         $task->save();
+
+        if (isset($data['labels'])) {
+            $task->labels()->attach($data['labels']);
+        }
 
         return redirect()->route('task.index');
     }

@@ -21,12 +21,12 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', function () {
     Log::debug('Test debug message' . Carbon::now()->toAtomString());
-    return redirect('dashboard');
+    return view('dashboard');
 });
 
 Route::resource('taskStatus', TaskStatusController::class);
 Route::resource('task', TaskController::class);
-Route::resource('label', LabelController::class);
+Route::resource('label', LabelController::class)->except(['show']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
