@@ -1,19 +1,18 @@
 <?php
 
-use App\Models\Label;
-use App\Models\Task;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class CreateLabelsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    public function down(): void
+    {
+        Schema::dropIfExists('label_task');
+        Schema::dropIfExists('labels');
+    }
+
+    public function up(): void
     {
         Schema::create('labels', function (Blueprint $table) {
             $table->id();
@@ -29,16 +28,5 @@ class CreateLabelsTable extends Migration
             $table->bigInteger('task_id');
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('labels');
-        Schema::dropIfExists('label_task');
     }
 }
