@@ -4,13 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LabelRequest;
 use App\Models\Label;
-use App\Models\TaskStatus;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class LabelController extends Controller
 {
-
     public function __construct()
     {
         $this->authorizeResource(Label::class, 'label');
