@@ -27,8 +27,9 @@ class StoreTaskRequest extends FormRequest
         return [
             'name'           => 'required|min:1',
             'status_id'      => 'exists:App\Models\TaskStatus,id',
-            'description'    => '',
-            'assigned_to_id' => '',
+            'description'    => 'nullable',
+            'assigned_to_id' => 'nullable',
+            'labels' => 'nullable',
         ];
     }
 }

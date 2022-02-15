@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LabelController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskStatusController;
 use App\Mail\InitMailtrapNotification;
@@ -20,20 +21,20 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', function () {
     Log::debug('Test debug message' . Carbon::now()->toAtomString());
-    return view('welcome');
+    return view('dashboard');
 });
 
 Route::resource('taskStatus', TaskStatusController::class);
 Route::resource('task', TaskController::class);
+Route::resource('label', LabelController::class)->except(['show']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+})->name('dashboard');
 
 Route::get('/send-mail', function () {
     Mail::to('newuser@example.com')->send(new InitMailtrapNotification());
     return view('welcome');
-
 });
 
 require __DIR__.'/auth.php';

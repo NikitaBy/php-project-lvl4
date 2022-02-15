@@ -13,13 +13,16 @@
             <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('header.start') }}
                     </x-nav-link>
                     <x-nav-link :href="route('taskStatus.index')" :active="request()->routeIs('taskStatus.index')">
-                        {{ __('app.header.task_status') }}
+                        {{ __('header.statuses') }}
                     </x-nav-link>
                     <x-nav-link :href="route('task.index')" :active="request()->routeIs('task.index')">
-                        {{ __('app.header.task') }}
+                        {{ __('header.tasks') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('label.index')" :active="request()->routeIs('label.index')">
+                        {{ __('header.labels') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -42,22 +45,30 @@
 
                         <x-slot name="content">
                             <!-- Authentication -->
+                            @auth
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
 
                                 <x-dropdown-link :href="route('logout')"
                                                  onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                    {{ __('Log Out') }}
+                                    {{ __('header.auth.logout') }}
                                 </x-dropdown-link>
                             </form>
+                            @else
+                                <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">{{ __('header.auth.login') }}</a>
+
+                                @if (Route::has('register'))
+                                    <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">{{ __('header.auth.register') }}</a>
+                                @endif
+                            @endauth
                         </x-slot>
                     </x-dropdown>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">{{ __('header.auth.login') }}</a>
 
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Register</a>
+                        <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">{{ __('header.auth.register') }}</a>
                     @endif
                 @endauth
             </div>

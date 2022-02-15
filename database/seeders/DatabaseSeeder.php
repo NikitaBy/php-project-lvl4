@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Label;
 use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\User;
@@ -18,7 +19,12 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create();
         TaskStatus::factory()->create();
+        Label::factory()->create();
 
-        Task::factory()->forStatus(['name' => 'Using status'])->forAuthor(['name' => 'Using user'])->create();
+        Task::factory()
+            ->forStatus(['name' => 'Using status'])
+            ->forAuthor(['name' => 'Using user'])
+            ->hasLabels(1, ['name' => 'Using label'])
+            ->create();
     }
 }
