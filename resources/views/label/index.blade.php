@@ -41,6 +41,7 @@
                         @endforeach
                         </tbody>
                     </table>
+                    {{ $labels->render() }}
                 </div>
             </div>
         </div>
