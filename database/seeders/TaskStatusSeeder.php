@@ -17,7 +17,6 @@ class TaskStatusSeeder extends Seeder
     {
         foreach (TaskStatusNameEnum::list() as $name) {
             $status = new TaskStatus();
-//            $status->fill([$name]);
             $status->name = $name;
             $status->save();
         }

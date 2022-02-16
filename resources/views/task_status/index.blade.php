@@ -39,6 +39,7 @@
                         @endforeach
                         </tbody>
                     </table>
+                        {{ $taskStatuses->render() }}
                 </div>
             </div>
         </div>

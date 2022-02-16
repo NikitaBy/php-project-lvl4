@@ -9,10 +9,10 @@
 @endif
 
 @csrf
-{{ Form::label('name', 'Название') }}
+{{ Form::label('name', __('app.model.name')) }}
 {{ Form::text('name') }}
 
-{{ Form::label('description', 'description') }}
+{{ Form::label('description', __('app.model.description')) }}
 {{ Form::text('description') }}
 
 <br>

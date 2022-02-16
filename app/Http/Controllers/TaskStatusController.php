@@ -23,12 +23,14 @@ class TaskStatusController extends Controller
     public function destroy(TaskStatus $taskStatus): RedirectResponse
     {
         if ($taskStatus->tasks()->count()) {
-            flash('Не удалось удалить статус')->error();
+            flash(__('app.flash.status.delete.error'))->error();
 
             return redirect()->route('taskStatus.index');
         }
 
         $taskStatus->delete();
+
+        flash(__('app.flash.status.delete.success'))->success();
 
         return redirect()->route('taskStatus.index');
     }
@@ -40,7 +42,7 @@ class TaskStatusController extends Controller
 
     public function index()
     {
-        $taskStatuses = TaskStatus::paginate();
+        $taskStatuses = TaskStatus::paginate(5);
 
         return view('task_status.index', compact('taskStatuses'));
     }
@@ -58,6 +60,8 @@ class TaskStatusController extends Controller
         $taskStatus->fill($data);
         $taskStatus->save();
 
+        flash(__('app.flash.status.create'))->success();
+
         return redirect()->route('taskStatus.index');
     }
 
@@ -67,6 +71,8 @@ class TaskStatusController extends Controller
 
         $taskStatus->fill($data);
         $taskStatus->save();
+
+        flash(__('app.flash.status.update'))->success();
 
         return redirect()->route('taskStatus.index');
     }

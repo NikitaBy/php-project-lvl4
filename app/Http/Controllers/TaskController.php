@@ -9,6 +9,8 @@ use App\Models\TaskStatus;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TaskController extends Controller
 {
@@ -32,6 +34,8 @@ class TaskController extends Controller
     {
         $task->delete();
 
+        flash(__('app.flash.task.delete.success'))->success();
+
         return redirect()->route('task.index');
     }
 
@@ -46,9 +50,23 @@ class TaskController extends Controller
 
     public function index()
     {
-        $tasks = Task::paginate();
+        $query = optional(request())->query();
+        $query = $query['filter'] ?? [];
 
-        return view('task.index', compact('tasks'));
+        $tasks = QueryBuilder::for(Task::class)
+            ->with(['status', 'author', 'assign'])
+            ->allowedFilters([
+                AllowedFilter::exact('status_id'),
+                AllowedFilter::exact('created_by_id'),
+                AllowedFilter::exact('assigned_to_id'),
+            ])
+            ->paginate(5)
+            ->appends($query);
+
+        $users = User::all();
+        $statuses = TaskStatus::all();
+
+        return view('task.index', compact('tasks', 'users', 'statuses', 'query'));
     }
 
     public function show(Task $task)
@@ -69,6 +87,8 @@ class TaskController extends Controller
             $task->labels()->attach($data['labels']);
         }
 
+        flash(__('app.flash.task.create'))->success();
+
         return redirect()->route('task.index');
     }
 
@@ -80,8 +100,11 @@ class TaskController extends Controller
         $task->save();
 
         if (isset($data['labels'])) {
-            $task->labels()->attach($data['labels']);
+            $labels = collect($data['labels'])->filter()->all();
+            $task->labels()->sync($labels);
         }
+
+        flash(__('app.flash.task.update'))->success();
 
         return redirect()->route('task.index');
     }

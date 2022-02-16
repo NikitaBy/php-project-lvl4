@@ -23,12 +23,14 @@ class LabelController extends Controller
     public function destroy(Label $label): RedirectResponse
     {
         if ($label->tasks()->count()) {
-            flash('Не удалось удалить label')->error();
+            flash(__('app.flash.label.delete.error'))->error();
 
             return redirect()->route('label.index');
         }
 
         $label->delete();
+
+        flash(__('app.flash.label.delete.success'))->success();
 
         return redirect()->route('label.index');
     }
@@ -40,7 +42,7 @@ class LabelController extends Controller
 
     public function index()
     {
-        $labels = Label::paginate();
+        $labels = Label::paginate(5);
 
         return view('label.index', compact('labels'));
     }
@@ -53,6 +55,8 @@ class LabelController extends Controller
         $label->fill($data);
         $label->save();
 
+        flash(__('app.flash.label.create'))->success();
+
         return redirect()->route('label.index');
     }
 
@@ -62,6 +66,8 @@ class LabelController extends Controller
 
         $label->fill($data);
         $label->save();
+
+        flash(__('app.flash.label.update'))->success();
 
         return redirect()->route('label.index');
     }

@@ -9,6 +9,14 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
+                    {{ Form::open(['url' => route('task.index') , 'method' => 'GET']) }}
+                    <div class="fields">
+                        {{ Form::select('filter[status_id]', collect($statuses)->mapWithKeys(function ($status, $key) {return [$status->id => $status->name];})->all(), $query['status_id'] ?? null, ['placeholder' => __('app.placeholders.status')]) }}
+                        {{ Form::select('filter[created_by_id]', collect($users)->mapWithKeys(function ($user, $key) {return [$user->id => $user->name];})->all(), $query['created_by_id'] ?? null, ['placeholder' => __('app.placeholders.author')]) }}
+                        {{ Form::select('filter[assigned_to_id]', collect($users)->mapWithKeys(function ($user, $key) {return [$user->id => $user->name];})->all(), $query['assigned_to_id'] ?? null, ['placeholder' => __('app.placeholders.assign')]) }}
+                        {{ Form::submit(__('app.form.apply')) }}
+                    </div>
+                    {{ Form::close() }}
                     @auth
                         <a href="{{route('task.create')}}">{{ __('app.form.create') }}</a>
                     @endif
@@ -47,6 +55,7 @@
                         @endforeach
                         </tbody>
                     </table>
+                    {{ $tasks->render() }}
                 </div>
             </div>
         </div>
