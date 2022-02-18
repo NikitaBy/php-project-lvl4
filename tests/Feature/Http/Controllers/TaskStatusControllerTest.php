@@ -61,13 +61,6 @@ class TaskStatusControllerTest extends TestCase
         $this->assertDatabaseCount('task_statuses', 2);
     }
 
-    public function testShow(): void
-    {
-        $response = $this->get(route('taskStatus.show', ['taskStatus' => TaskStatus::first()]));
-
-        $response->assertRedirect();
-    }
-
     public function testStore(): void
     {
         $user = User::factory()->create();

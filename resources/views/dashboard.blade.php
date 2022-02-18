@@ -1,16 +1,7 @@
-<x-app-layout>
-    <x-slot name="header">
-    </x-slot>
+@extends('layouts.standard_layout')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <h1>{{ __('app.welcome.hello') }}</h1>
-                    <p>{{ __('app.welcome.subject') }}</p>
-                    <button href="https://hexlet.io" class="btn btn-primary btn-lg" type="button">{{ __('app.welcome.learn_more') }}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+@section('content')
+    <h1>{{ __('app.welcome.hello') }}</h1>
+    <p>{{ __('app.welcome.subject') }}</p>
+    <button href="https://hexlet.io" class="btn btn-primary btn-lg" type="button">{{ __('app.welcome.learn_more') }}</button>
+@endsection

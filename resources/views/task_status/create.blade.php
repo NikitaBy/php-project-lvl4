@@ -1,20 +1,12 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('app.titles.status.create') }}
-        </h2>
-    </x-slot>
+@extends('layouts.standard_layout')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    {{ Form::model($taskStatus, ['url' => route('taskStatus.store')]) }}
-                    @include('task_status.form')
-                    {{ Form::submit(__('app.form.create')) }}
-                    {{ Form::close() }}
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+@section('head_title')
+    {{ __('app.titles.status.create') }}
+@endsection
+
+@section('content')
+    {{ Form::model($taskStatus, ['url' => route('taskStatus.store')]) }}
+    @include('task_status.form')
+    {{ Form::submit(__('app.form.create')) }}
+    {{ Form::close() }}
+@endsection

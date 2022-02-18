@@ -47,11 +47,6 @@ class TaskStatusController extends Controller
         return view('task_status.index', compact('taskStatuses'));
     }
 
-    public function show(TaskStatus $taskStatus)
-    {
-        return redirect()->route('taskStatus.index');
-    }
-
     public function store(StoreTaskStatusRequest $request): RedirectResponse
     {
         $data = $request->validated();
