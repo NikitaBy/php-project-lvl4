@@ -3,3 +3,6 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/f4aca00cdb06805299ed/maintainability)](https://codeclimate.com/github/NikitaBy/php-project-lvl4/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f4aca00cdb06805299ed/test_coverage)](https://codeclimate.com/github/NikitaBy/php-project-lvl4/test_coverage)
+
+### View project on heroku
+[http://hexlet-lvl4.herokuapp.com/dashboard](http://hexlet-lvl4.herokuapp.com/dashboard)
