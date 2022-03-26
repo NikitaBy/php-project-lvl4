@@ -40,8 +40,7 @@ class TaskController extends Controller
         TaskRepository $taskRepository,
         FlashRenderer $flashRenderer,
         TaskFiller $taskFiller
-    )
-    {
+    ) {
         $this->authorizeResource(Task::class, 'task');
 
         $this->flashRenderer = $flashRenderer;
