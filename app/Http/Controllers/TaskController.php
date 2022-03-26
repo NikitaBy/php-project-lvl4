@@ -2,26 +2,57 @@
 
 namespace App\Http\Controllers;
 
+use App\Factory\TaskFactory;
+use App\Filler\TaskFiller;
 use App\Http\Requests\StoreTaskRequest;
 use App\Models\Label;
 use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\User;
+use App\Repository\TaskRepository;
+use App\Service\FlashRenderer;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class TaskController extends Controller
 {
-    public function __construct()
+    /**
+     * @var FlashRenderer
+     */
+    private $flashRenderer;
+
+    /**
+     * @var TaskFactory
+     */
+    private $taskFactory;
+
+    /**
+     * @var TaskFiller
+     */
+    private $taskFiller;
+
+    /**
+     * @var TaskRepository
+     */
+    private $taskRepository;
+
+    public function __construct(
+        TaskFactory    $taskFactory,
+        TaskRepository $taskRepository,
+        FlashRenderer  $flashRenderer,
+        TaskFiller     $taskFiller
+    )
     {
         $this->authorizeResource(Task::class, 'task');
+
+        $this->flashRenderer = $flashRenderer;
+        $this->taskFactory = $taskFactory;
+        $this->taskFiller = $taskFiller;
+        $this->taskRepository = $taskRepository;
     }
 
     public function create()
     {
-        $task = new Task();
+        $task = $this->taskFactory->create();
 
         $statuses = TaskStatus::all();
         $users = User::all();
@@ -34,7 +65,7 @@ class TaskController extends Controller
     {
         $task->delete();
 
-        flash(__('app.flash.task.delete.success'))->success();
+        $this->flashRenderer->renderSuccessFlash('app.flash.task.delete.success');
 
         return redirect()->route('task.index');
     }
@@ -53,15 +84,7 @@ class TaskController extends Controller
         $query = optional(request())->query();
         $query = $query['filter'] ?? [];
 
-        $tasks = QueryBuilder::for(Task::class)
-            ->with(['status', 'author', 'assign'])
-            ->allowedFilters([
-                AllowedFilter::exact('status_id'),
-                AllowedFilter::exact('created_by_id'),
-                AllowedFilter::exact('assigned_to_id'),
-            ])
-            ->paginate(5)
-            ->appends($query);
+        $tasks = $this->taskRepository->findByFilter($query);
 
         $users = User::all();
         $statuses = TaskStatus::all();
@@ -78,16 +101,10 @@ class TaskController extends Controller
     {
         $data = $request->validated();
 
-        $task = new Task();
-        $task->fill($data);
-        $task->author()->associate(Auth::user());
-        $task->save();
+        $task = $this->taskFactory->createWithAuthor();
+        $this->taskFiller->fillOnCreate($task, $data);
 
-        if (isset($data['labels'])) {
-            $task->labels()->attach($data['labels']);
-        }
-
-        flash(__('app.flash.task.create'))->success();
+        $this->flashRenderer->renderSuccessFlash('app.flash.task.create');
 
         return redirect()->route('task.index');
     }
@@ -96,15 +113,9 @@ class TaskController extends Controller
     {
         $data = $request->validated();
 
-        $task->fill($data);
-        $task->save();
+        $this->taskFiller->fillOnUpdate($task, $data);
 
-        if (isset($data['labels'])) {
-            $labels = collect($data['labels'])->filter()->all();
-            $task->labels()->sync($labels);
-        }
-
-        flash(__('app.flash.task.update'))->success();
+        $this->flashRenderer->renderSuccessFlash('app.flash.task.update');
 
         return redirect()->route('task.index');
     }

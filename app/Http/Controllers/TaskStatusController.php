@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskStatusRequest;
 use App\Models\TaskStatus;
+use App\Service\FlashRenderer;
 use Illuminate\Http\RedirectResponse;
 
 class TaskStatusController extends Controller
 {
-    public function __construct()
+    /**
+     * @var FlashRenderer
+     */
+    private $flashRenderer;
+
+    public function __construct(FlashRenderer $flashRenderer)
     {
         $this->authorizeResource(TaskStatus::class, 'taskStatus');
+        $this->flashRenderer = $flashRenderer;
     }
 
     public function create()
@@ -23,14 +30,14 @@ class TaskStatusController extends Controller
     public function destroy(TaskStatus $taskStatus): RedirectResponse
     {
         if ($taskStatus->tasks()->count()) {
-            flash(__('app.flash.status.delete.error'))->error();
+            $this->flashRenderer->renderErrorFlash('app.flash.status.delete.error');
 
             return redirect()->route('taskStatus.index');
         }
 
         $taskStatus->delete();
 
-        flash(__('app.flash.status.delete.success'))->success();
+        $this->flashRenderer->renderSuccessFlash('app.flash.status.delete.success');
 
         return redirect()->route('taskStatus.index');
     }
@@ -52,10 +59,9 @@ class TaskStatusController extends Controller
         $data = $request->validated();
 
         $taskStatus = new TaskStatus();
-        $taskStatus->fill($data);
-        $taskStatus->save();
+        $this->setTaskStatusData($taskStatus, $data);
 
-        flash(__('app.flash.status.create'))->success();
+        $this->flashRenderer->renderSuccessFlash('app.flash.status.create');
 
         return redirect()->route('taskStatus.index');
     }
@@ -64,11 +70,16 @@ class TaskStatusController extends Controller
     {
         $data = $request->validated();
 
-        $taskStatus->fill($data);
-        $taskStatus->save();
+        $this->setTaskStatusData($taskStatus, $data);
 
-        flash(__('app.flash.status.update'))->success();
+        $this->flashRenderer->renderSuccessFlash('app.flash.status.update');
 
         return redirect()->route('taskStatus.index');
+    }
+
+    private function setTaskStatusData(TaskStatus $taskStatus, array $data): void
+    {
+        $taskStatus->fill($data);
+        $taskStatus->save();
     }
 }

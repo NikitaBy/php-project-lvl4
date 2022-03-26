@@ -6,3 +6,4 @@
 
 ### View project on heroku
 [http://hexlet-lvl4.herokuapp.com/dashboard](http://hexlet-lvl4.herokuapp.com/dashboard)
+#### Note: functional available for auth user (login/password `demo@test.com`)

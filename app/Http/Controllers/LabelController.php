@@ -4,13 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LabelRequest;
 use App\Models\Label;
+use App\Service\FlashRenderer;
 use Illuminate\Http\RedirectResponse;
 
 class LabelController extends Controller
 {
-    public function __construct()
+    /**
+     * @var FlashRenderer
+     */
+    private $flashRenderer;
+
+    public function __construct(FlashRenderer $flashRenderer)
     {
         $this->authorizeResource(Label::class, 'label');
+
+        $this->flashRenderer = $flashRenderer;
     }
 
     public function create()
@@ -23,14 +31,14 @@ class LabelController extends Controller
     public function destroy(Label $label): RedirectResponse
     {
         if ($label->tasks()->count()) {
-            flash(__('app.flash.label.delete.error'))->error();
+            $this->flashRenderer->renderErrorFlash('app.flash.label.delete.error');
 
             return redirect()->route('label.index');
         }
 
         $label->delete();
 
-        flash(__('app.flash.label.delete.success'))->success();
+        $this->flashRenderer->renderSuccessFlash('app.flash.label.delete.success');
 
         return redirect()->route('label.index');
     }
@@ -52,10 +60,9 @@ class LabelController extends Controller
         $data = $request->validated();
 
         $label = new Label();
-        $label->fill($data);
-        $label->save();
+        $this->setLabelData($label, $data);
 
-        flash(__('app.flash.label.create'))->success();
+        $this->flashRenderer->renderSuccessFlash('app.flash.label.create');
 
         return redirect()->route('label.index');
     }
@@ -64,11 +71,16 @@ class LabelController extends Controller
     {
         $data = $request->validated();
 
-        $label->fill($data);
-        $label->save();
+        $this->setLabelData($label, $data);
 
-        flash(__('app.flash.label.update'))->success();
+        $this->flashRenderer->renderSuccessFlash('app.flash.label.update');
 
         return redirect()->route('label.index');
+    }
+
+    private function setLabelData(Label $label, array $data): void
+    {
+        $label->fill($data);
+        $label->save();
     }
 }
