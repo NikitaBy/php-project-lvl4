@@ -36,10 +36,10 @@ class TaskController extends Controller
     private $taskRepository;
 
     public function __construct(
-        TaskFactory    $taskFactory,
+        TaskFactory $taskFactory,
         TaskRepository $taskRepository,
-        FlashRenderer  $flashRenderer,
-        TaskFiller     $taskFiller
+        FlashRenderer $flashRenderer,
+        TaskFiller $taskFiller
     )
     {
         $this->authorizeResource(Task::class, 'task');
